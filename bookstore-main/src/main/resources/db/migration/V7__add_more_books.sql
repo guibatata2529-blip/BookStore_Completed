@@ -1,0 +1,22 @@
+-- Adicionar mais livros ao catálogo
+INSERT INTO tb_books (title, synopsis, author, price) VALUES
+('O Alquimista', 'A jornada de Santiago em busca de seu tesouro pessoal pelo deserto do Egito.', 'Paulo Coelho', 34.90),
+('A Culpa é das Estrelas', 'História de amor entre dois adolescentes que se conhecem em um grupo de apoio para pacientes com câncer.', 'John Green', 32.90),
+('O Cortiço', 'Clássico naturalista brasileiro que retrata a vida em um cortiço no Rio de Janeiro.', 'Aluísio Azevedo', 28.90),
+('Memórias Póstumas de Brás Cubas', 'Romance inovador narrado por um defunto autor que conta sua vida.', 'Machado de Assis', 31.90),
+('A Metamorfose', 'Gregor Samsa acorda transformado em um inseto gigante nesta obra-prima de Kafka.', 'Franz Kafka', 25.90),
+('O Corvo', 'Coletânea de poemas incluindo o famoso "O Corvo" de Edgar Allan Poe.', 'Edgar Allan Poe', 27.90),
+('Cem Sonetos de Amor', 'Coletânea de poemas de amor do poeta chileno Pablo Neruda.', 'Pablo Neruda', 29.90),
+('A Moreninha', 'Romance brasileiro que narra o amor entre Augusto e Carolina.', 'Joaquim Manuel de Macedo', 24.90),
+('Iracema', 'Lenda do Ceará sobre o amor entre a índia Iracema e o português Martim.', 'José de Alencar', 26.90),
+('O Guarani', 'Romance indianista sobre o amor entre Peri e Cecília.', 'José de Alencar', 33.90),
+('Capitães da Areia', 'História de um grupo de meninos de rua em Salvador.', 'Jorge Amado', 36.90),
+('Vidas Secas', 'Retrato da vida de uma família de retirantes no sertão nordestino.', 'Graciliano Ramos', 30.90),
+('Grande Sertão: Veredas', 'Obra-prima de Guimarães Rosa sobre o sertão e a vida de Riobaldo.', 'João Guimarães Rosa', 54.90),
+('A Hora da Estrela', 'História de Macabéa, uma nordestina que vive no Rio de Janeiro.', 'Clarice Lispector', 28.90),
+('O Auto da Compadecida', 'Peça teatral que mistura elementos da cultura popular nordestina.', 'Ariano Suassuna', 32.90),
+('Quincas Borba', 'Romance que narra a história de Rubião e sua herança.', 'Machado de Assis', 33.90),
+('O Primo Basílio', 'Romance realista sobre adultério na sociedade lisboeta.', 'Eça de Queirós', 37.90),
+('Os Lusíadas', 'Epopeia que narra as grandes navegações portuguesas.', 'Luís de Camões', 41.90),
+('Ensaio sobre a Cegueira', 'Alegoria sobre uma epidemia de cegueira branca.', 'José Saramago', 44.90),
+('O Nome da Rosa', 'Mistério medieval em um mosteiro italiano.', 'Umberto Eco', 49.90);

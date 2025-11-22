@@ -1,12 +1,17 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { CartProvider } from '@/contexts/CartContext';
 import { Toaster } from '@/components/ui/sonner';
 import Login from '@/pages/Login';
 import Books from '@/pages/Books';      
 import MyReservations from '@/pages/MyReservations';
 import Categorias from '@/pages/Categorias';
 import Sobre from '@/pages/Sobre';
+import Carrinho from '@/pages/Carrinho';
+import Pagamento from '@/pages/Pagamento';
+import PedidoConfirmado from '@/pages/PedidoConfirmado';
+import MeusPedidos from '@/pages/MeusPedidos';
 import Navbar from '@/components/Header';
 
 // Componente para proteger rotas que precisam de autenticação
@@ -78,6 +83,42 @@ function AppRoutes() {
             </ProtectedRoute>
           } 
         />
+
+        <Route 
+          path="/carrinho" 
+          element={
+            <ProtectedRoute>
+              <Carrinho />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/pagamento" 
+          element={
+            <ProtectedRoute>
+              <Pagamento />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/pedido-confirmado/:orderId" 
+          element={
+            <ProtectedRoute>
+              <PedidoConfirmado />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/meus-pedidos" 
+          element={
+            <ProtectedRoute>
+              <MeusPedidos />
+            </ProtectedRoute>
+          } 
+        />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -89,8 +130,10 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
-        <Toaster position="top-right" />
+        <CartProvider>
+          <AppRoutes />
+          <Toaster position="top-right" />
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );

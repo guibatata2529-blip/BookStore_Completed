@@ -23,4 +23,10 @@ public class BookModel {
     @Column (name = "synopsis")
     private String synopsis;
 
+    @Column (name = "author")
+    private String author;
+
+    @Column (name = "price")
+    private java.math.BigDecimal price;
+
 }

@@ -64,13 +64,9 @@ api.interceptors.response.use(
 export interface Book {
   id: number;
   title: string;
-  author: string;
-  isbn: string;
-  publisher: string;
-  publicationYear: number;
-  availableCopies: number;
-  totalCopies: number;
+  author?: string;
   synopsis?: string;
+  price?: number;
 }
 
 export interface Reservation {
@@ -164,6 +160,46 @@ export const reservationsApi = {
 
   async cancel(id: number): Promise<Reservation> {
     const response = await api.put(`/reservations/${id}/cancel`);
+    return response.data;
+  },
+};
+
+// Orders API
+export interface OrderItem {
+  bookId: number;
+  bookTitle?: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface Order {
+  id: number;
+  customerId: number;
+  customerName: string;
+  orderDate: string;
+  status: string;
+  subtotal: number;
+  shippingFee: number;
+  discount: number;
+  total: number;
+  paymentMethod: string;
+  items: OrderItem[];
+}
+
+export const ordersApi = {
+  async create(items: OrderItem[], paymentMethod: string): Promise<Order> {
+    const response = await api.post('/orders', { items, paymentMethod });
+    return response.data;
+  },
+
+  async getAll(): Promise<Order[]> {
+    const response = await api.get('/orders');
+    return response.data;
+  },
+
+  async getById(id: number): Promise<Order> {
+    const response = await api.get(`/orders/${id}`);
     return response.data;
   },
 };

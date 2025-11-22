@@ -1,60 +1,18 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, Minus } from "lucide-react";
-import { Link } from "react-router-dom";
-
-interface CartItem {
-  id: string;
-  title: string;
-  author: string;
-  price: number;
-  cover: string;
-  quantity: number;
-}
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
 
 const Carrinho = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      title: "1984",
-      author: "George Orwell",
-      price: 45.90,
-      cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
-      quantity: 1,
-    },
-    {
-      id: "2",
-      title: "O Senhor dos Anéis",
-      author: "J.R.R. Tolkien",
-      price: 89.90,
-      cover: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=400&h=600&fit=crop",
-      quantity: 2,
-    },
-  ]);
+  const { items, updateQuantity, removeFromCart, getSubtotal, getTotal } = useCart();
+  const navigate = useNavigate();
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
+  const subtotal = getSubtotal();
+  const shipping = 10.00;
+  const total = getTotal();
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const shipping = 15.00;
-  const total = subtotal + shipping;
-
-  if (cartItems.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-12">
@@ -87,25 +45,23 @@ const Carrinho = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <div className="space-y-4">
-              {cartItems.map((item) => (
+              {items.map((item) => (
                 <Card key={item.id}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
-                      <img
-                        src={item.cover}
-                        alt={item.title}
-                        className="h-32 w-24 rounded object-cover"
-                      />
+                      <div className="h-32 w-24 rounded bg-muted flex items-center justify-center">
+                        <span className="text-4xl">📚</span>
+                      </div>
                       <div className="flex flex-1 flex-col justify-between">
                         <div>
                           <h3 className="font-semibold text-foreground">
                             {item.title}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            {item.author}
+                            {item.author || 'Autor desconhecido'}
                           </p>
                           <p className="mt-2 font-bold text-primary">
-                            R$ {item.price.toFixed(2)}
+                            R$ {(item.price || 0).toFixed(2)}
                           </p>
                         </div>
                         <div className="flex items-center justify-between">
@@ -113,7 +69,7 @@ const Carrinho = () => {
                             <Button
                               size="icon"
                               variant="outline"
-                              onClick={() => updateQuantity(item.id, -1)}
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
@@ -123,7 +79,7 @@ const Carrinho = () => {
                             <Button
                               size="icon"
                               variant="outline"
-                              onClick={() => updateQuantity(item.id, 1)}
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -131,7 +87,7 @@ const Carrinho = () => {
                           <Button
                             size="icon"
                             variant="ghost"
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeFromCart(item.id)}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -167,7 +123,11 @@ const Carrinho = () => {
                     </div>
                   </div>
                 </div>
-                <Button className="mt-6 w-full" size="lg">
+                <Button 
+                  className="mt-6 w-full" 
+                  size="lg"
+                  onClick={() => navigate('/pagamento')}
+                >
                   Finalizar Compra
                 </Button>
                 <Link to="/categorias">

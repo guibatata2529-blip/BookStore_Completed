@@ -12,5 +12,7 @@ public class BookDTO {
     private Long id;
     private String title;
     private String synopsis;
+    private String author;
+    private java.math.BigDecimal price;
 
 }

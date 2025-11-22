@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, User, BookOpen, Search, BookMarked } from "lucide-react";
+import { LogOut, User, BookOpen, Search, BookMarked, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +17,10 @@ import {
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { getItemCount } = useCart();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const cartItemCount = getItemCount();
 
   const handleLogout = () => {
     logout();
@@ -80,6 +84,23 @@ const Header = () => {
             </Button>
           </form>
 
+          <Button 
+            size="icon" 
+            variant="ghost"
+            onClick={() => navigate("/carrinho")}
+            className="relative"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {cartItemCount > 0 && (
+              <Badge 
+                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                variant="destructive"
+              >
+                {cartItemCount}
+              </Badge>
+            )}
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" variant="ghost">
@@ -97,6 +118,10 @@ const Header = () => {
               <DropdownMenuItem onClick={() => navigate("/reservations")}>
                 <BookMarked className="mr-2 h-4 w-4" />
                 Minhas Reservas
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/meus-pedidos")}>
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Meus Pedidos
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-red-600">

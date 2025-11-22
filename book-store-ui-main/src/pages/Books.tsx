@@ -2,14 +2,17 @@
 import { useState, useEffect } from 'react';
 import { booksApi, reservationsApi, Book } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { ShoppingCart } from 'lucide-react';
 
 export default function Books() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     loadBooks();
@@ -81,14 +84,37 @@ export default function Books() {
                     {book.synopsis}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Button 
-                    onClick={() => handleReserve(book.id)}
-                    className="w-full"
-                    disabled={!isAuthenticated}
-                  >
-                    {isAuthenticated ? 'Reservar' : 'Faça login para reservar'}
-                  </Button>
+                <CardContent className="space-y-2">
+                  {book.author && (
+                    <p className="text-sm text-muted-foreground">
+                      Por: {book.author}
+                    </p>
+                  )}
+                  {book.price && (
+                    <p className="text-2xl font-bold text-primary">
+                      R$ {book.price.toFixed(2)}
+                    </p>
+                  )}
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => {
+                        addToCart(book);
+                        toast.success('Livro adicionado ao carrinho!');
+                      }}
+                      className="flex-1"
+                    >
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Comprar
+                    </Button>
+                    <Button 
+                      onClick={() => handleReserve(book.id)}
+                      variant="outline"
+                      className="flex-1"
+                      disabled={!isAuthenticated}
+                    >
+                      Reservar
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
