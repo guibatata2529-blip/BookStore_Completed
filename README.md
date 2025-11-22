@@ -1,6 +1,6 @@
-# 📚 BookStore - Sistema de Gerenciamento de Livraria
+# 📚 BookStore - Sistema Completo de E-commerce de Livros
 
-Sistema completo de gerenciamento de livraria com backend em Spring Boot e frontend em React + TypeScript.
+Sistema completo de e-commerce de livraria com carrinho de compras, gerenciamento de pedidos, autenticação JWT e interface moderna. Backend em Spring Boot e frontend em React + TypeScript.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -148,6 +148,11 @@ O sistema utiliza **JWT (JSON Web Tokens)** para autenticação:
 - `GET /reservations/{id}` - Buscar reserva por ID (autenticado)
 - `PUT /reservations/{id}/cancel` - Cancelar reserva (autenticado)
 
+### Pedidos (`/orders`) 🆕
+- `POST /orders` - Criar pedido/finalizar compra (autenticado)
+- `GET /orders` - Listar meus pedidos (autenticado)
+- `GET /orders/{id}` - Buscar pedido por ID (autenticado)
+
 ## 🗄️ Banco de Dados
 
 ### Tabelas
@@ -157,6 +162,8 @@ O sistema utiliza **JWT (JSON Web Tokens)** para autenticação:
 - id (BIGINT, PK, AUTO_INCREMENT)
 - title (VARCHAR(255))
 - synopsis (VARCHAR(255))
+- author (VARCHAR(255))
+- price (DECIMAL(10, 2))
 ```
 
 **tb_customers**
@@ -177,19 +184,64 @@ O sistema utiliza **JWT (JSON Web Tokens)** para autenticação:
 - status (VARCHAR(50))
 ```
 
+**tb_orders** 🆕
+```sql
+- id (BIGINT, PK, AUTO_INCREMENT)
+- customer_id (BIGINT, FK)
+- order_date (TIMESTAMP)
+- status (VARCHAR(50))
+- subtotal (DECIMAL(10, 2))
+- shipping_fee (DECIMAL(10, 2))
+- discount (DECIMAL(10, 2))
+- total (DECIMAL(10, 2))
+- payment_method (VARCHAR(50))
+```
+
+**tb_order_items** 🆕
+```sql
+- id (BIGINT, PK, AUTO_INCREMENT)
+- order_id (BIGINT, FK)
+- book_id (BIGINT, FK)
+- quantity (INT)
+- unit_price (DECIMAL(10, 2))
+- subtotal (DECIMAL(10, 2))
+```
+
 ### Dados de Exemplo
 
-O sistema inclui 10 livros pré-cadastrados:
-1. 1984
-2. O Senhor dos Anéis
-3. Dom Casmurro
-4. Harry Potter e a Pedra Filosofal
-5. O Pequeno Príncipe
-6. Cem Anos de Solidão
-7. O Hobbit
-8. A Revolução dos Bichos
-9. O Código Da Vinci
-10. Orgulho e Preconceito
+O sistema inclui **30 livros pré-cadastrados** com preços variados:
+
+**Clássicos Brasileiros:**
+1. Dom Casmurro - Machado de Assis (R$ 35,00)
+2. Memórias Póstumas de Brás Cubas - Machado de Assis (R$ 31,90)
+3. O Cortiço - Aluísio Azevedo (R$ 28,90)
+4. Capitães da Areia - Jorge Amado (R$ 36,90)
+5. Vidas Secas - Graciliano Ramos (R$ 30,90)
+6. Grande Sertão: Veredas - Guimarães Rosa (R$ 54,90)
+7. A Hora da Estrela - Clarice Lispector (R$ 28,90)
+8. Iracema - José de Alencar (R$ 26,90)
+9. O Guarani - José de Alencar (R$ 33,90)
+10. A Moreninha - Joaquim Manuel de Macedo (R$ 24,90)
+
+**Literatura Internacional:**
+11. 1984 - George Orwell (R$ 45,90)
+12. O Senhor dos Anéis - J.R.R. Tolkien (R$ 89,90)
+13. Harry Potter e a Pedra Filosofal - J.K. Rowling (R$ 55,90)
+14. O Pequeno Príncipe - Antoine de Saint-Exupéry (R$ 29,90)
+15. Cem Anos de Solidão - Gabriel García Márquez (R$ 52,90)
+16. O Hobbit - J.R.R. Tolkien (R$ 48,90)
+17. A Revolução dos Bichos - George Orwell (R$ 38,90)
+18. O Código Da Vinci - Dan Brown (R$ 42,90)
+19. Orgulho e Preconceito - Jane Austen (R$ 39,90)
+20. A Metamorfose - Franz Kafka (R$ 25,90)
+
+**E mais 10 títulos incluindo:**
+- O Alquimista - Paulo Coelho
+- A Culpa é das Estrelas - John Green
+- O Auto da Compadecida - Ariano Suassuna
+- Ensaio sobre a Cegueira - José Saramago
+- O Nome da Rosa - Umberto Eco
+- E outros...
 
 ## 🎨 Funcionalidades do Frontend
 
@@ -201,21 +253,53 @@ O sistema inclui 10 livros pré-cadastrados:
    - Validação de campos
 
 2. **Livros** (`/`)
-   - Lista de todos os livros
-   - Botão para reservar
-   - Sinopse de cada livro
+   - Lista de todos os livros com preços
+   - Botão "Comprar" para adicionar ao carrinho
+   - Botão "Reservar" para fazer reserva
+   - Exibição de autor e sinopse
 
-3. **Minhas Reservas** (`/reservations`)
+3. **Carrinho de Compras** (`/carrinho`) 🆕
+   - Visualização de itens no carrinho
+   - Ajuste de quantidade (+/-)
+   - Remoção de itens
+   - Cálculo automático de subtotal e total
+   - Frete fixo de R$ 10,00
+   - Botão para finalizar compra
+
+4. **Pagamento** (`/pagamento`) 🆕
+   - Seleção de forma de pagamento:
+     - Cartão de Crédito
+     - Cartão de Débito
+     - PIX
+   - Formulário de dados do cartão
+   - Resumo do pedido
+   - Confirmação de compra
+
+5. **Pedido Confirmado** (`/pedido-confirmado/:id`) 🆕
+   - Confirmação visual com ícone de sucesso
+   - Detalhes completos do pedido
+   - Lista de itens comprados
+   - Valores (subtotal, frete, total)
+   - Botões para continuar comprando ou ver pedidos
+
+6. **Meus Pedidos** (`/meus-pedidos`) 🆕
+   - Histórico completo de compras
+   - Status de cada pedido
+   - Detalhes de itens e valores
+   - Data e hora do pedido
+   - Forma de pagamento utilizada
+
+7. **Minhas Reservas** (`/reservations`)
    - Lista de reservas do usuário
    - Status da reserva (Ativa, Cancelada, Concluída)
    - Botão para cancelar reserva ativa
 
-4. **Categorias** (`/categorias`)
+8. **Categorias** (`/categorias`)
    - Filtro por categorias
-   - Grid de livros
-   - Opção de reservar
+   - Grid de livros com preços
+   - Botões de comprar e reservar
 
-5. **Sobre Nós** (`/sobre`)
+9. **Sobre Nós** (`/sobre`)
    - Informações sobre a livraria
    - História da empresa
    - Valores e missão
@@ -226,6 +310,7 @@ O sistema inclui 10 livros pré-cadastrados:
 - Navegação principal
 - Menu dropdown do usuário
 - Campo de busca
+- Ícone do carrinho com contador de itens 🆕
 - Botão de logout
 
 **AuthContext.tsx**
@@ -233,11 +318,22 @@ O sistema inclui 10 livros pré-cadastrados:
 - Funções de login, registro e logout
 - Verificação de autenticação
 
+**CartContext.tsx** 🆕
+- Gerenciamento global do carrinho
+- Adicionar/remover itens
+- Atualizar quantidades
+- Cálculo de totais
+- Persistência no localStorage
+
 **api.ts**
 - Configuração do Axios
 - Interceptors para JWT
 - Refresh token automático
-- APIs organizadas (authApi, booksApi, reservationsApi)
+- APIs organizadas:
+  - `authApi` - Autenticação
+  - `booksApi` - Livros
+  - `reservationsApi` - Reservas
+  - `ordersApi` - Pedidos 🆕
 
 ## 🔒 Segurança
 
@@ -280,14 +376,33 @@ VITE_API_URL=http://localhost:8081
 
 ## 🧪 Testando a Aplicação
 
+### Fluxo Completo de Compra
+
 1. **Inicie o backend** (porta 8081)
 2. **Inicie o frontend** (porta 8080)
 3. **Acesse** `http://localhost:8080`
 4. **Crie uma conta** com nome, email e senha
 5. **Faça login** com as credenciais criadas
-6. **Navegue pelos livros** e faça reservas
-7. **Veja suas reservas** em "Minhas Reservas"
-8. **Teste o logout** clicando no ícone de usuário → "Sair"
+6. **Navegue pelos livros** (30 livros disponíveis com preços)
+7. **Adicione livros ao carrinho** clicando em "Comprar"
+8. **Veja o contador** no ícone do carrinho aumentar
+9. **Acesse o carrinho** clicando no ícone
+10. **Ajuste quantidades** ou remova itens
+11. **Clique em "Finalizar Compra"**
+12. **Escolha a forma de pagamento** (Crédito, Débito ou PIX)
+13. **Preencha os dados** (se cartão)
+14. **Confirme o pedido**
+15. **Veja a confirmação** com todos os detalhes
+16. **Acesse "Meus Pedidos"** para ver o histórico
+
+### Outras Funcionalidades
+
+- **Fazer reservas** de livros (botão "Reservar")
+- **Ver reservas** em "Minhas Reservas"
+- **Cancelar reservas** ativas
+- **Explorar categorias** de livros
+- **Buscar livros** (campo de busca no header)
+- **Fazer logout** (menu do usuário → "Sair")
 
 ## 🐛 Troubleshooting
 
@@ -305,6 +420,40 @@ VITE_API_URL=http://localhost:8081
 - Verifique se o token está sendo enviado
 - Tente fazer logout e login novamente
 - Limpe o `localStorage` do navegador
+
+## ✨ Funcionalidades Implementadas
+
+### Backend
+- ✅ Autenticação JWT com refresh token
+- ✅ CRUD completo de livros
+- ✅ Sistema de reservas
+- ✅ Sistema de pedidos/compras 🆕
+- ✅ Cálculo automático de totais
+- ✅ Múltiplas formas de pagamento
+- ✅ Histórico de pedidos
+- ✅ 30 livros pré-cadastrados com preços
+
+### Frontend
+- ✅ Interface moderna com Tailwind CSS
+- ✅ Autenticação completa
+- ✅ Carrinho de compras funcional 🆕
+- ✅ Checkout com múltiplas formas de pagamento 🆕
+- ✅ Confirmação de pedido 🆕
+- ✅ Histórico de compras 🆕
+- ✅ Contador de itens no carrinho 🆕
+- ✅ Persistência do carrinho no localStorage
+- ✅ Sistema de reservas
+- ✅ Navegação completa
+- ✅ Responsivo para mobile
+
+## 💰 Sistema de Preços
+
+Os livros possuem preços variados de **R$ 24,90** a **R$ 89,90**:
+- Livros clássicos: R$ 24,90 - R$ 35,00
+- Livros populares: R$ 35,00 - R$ 50,00
+- Edições especiais: R$ 50,00 - R$ 89,90
+
+**Frete fixo**: R$ 10,00 para todos os pedidos
 
 ## 📦 Build para Produção
 
@@ -338,6 +487,52 @@ Este projeto foi desenvolvido para fins educacionais - UNIFECAF.
 
 Para dúvidas ou problemas, abra uma issue no repositório.
 
+## 🎯 Tecnologias e Padrões Utilizados
+
+### Backend
+- **Spring Boot 3.5.7** - Framework principal
+- **Spring Security** - Autenticação e autorização
+- **JWT** - Tokens de acesso e refresh
+- **Spring Data JPA** - Persistência de dados
+- **Flyway** - Versionamento de banco de dados
+- **H2 Database** - Banco de dados em memória
+- **Lombok** - Redução de boilerplate
+- **Maven** - Gerenciamento de dependências
+
+### Frontend
+- **React 18** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool moderna
+- **React Router DOM** - Roteamento
+- **Axios** - Cliente HTTP
+- **Context API** - Gerenciamento de estado
+- **Shadcn/ui** - Componentes UI
+- **Tailwind CSS** - Estilização
+- **Lucide React** - Ícones
+- **Sonner** - Notificações toast
+
+### Padrões de Projeto
+- **Repository Pattern** - Acesso a dados
+- **DTO Pattern** - Transferência de dados
+- **Service Layer** - Lógica de negócio
+- **Context Pattern** - Estado global (React)
+- **Interceptor Pattern** - Requisições HTTP
+
+## 📈 Melhorias Futuras
+
+- [ ] Sistema de avaliações e comentários
+- [ ] Filtros avançados de busca
+- [ ] Wishlist (lista de desejos)
+- [ ] Cupons de desconto
+- [ ] Rastreamento de pedidos
+- [ ] Notificações por email
+- [ ] Painel administrativo
+- [ ] Relatórios de vendas
+- [ ] Integração com gateway de pagamento real
+- [ ] Sistema de recomendações
+
 ---
 
 **Desenvolvido com ❤️ para UNIFECAF**
+
+**Versão**: 2.0.0 - Sistema Completo de E-commerce
